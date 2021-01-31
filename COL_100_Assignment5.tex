@@ -1,0 +1,87 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+\title{ASSIGNMENT 4}
+\author{ANURAG GUPTA  2020EE30583}
+
+\date{JANUARY 2021}
+
+\usepackage{natbib}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\begin{document}
+\maketitle
+
+\section{PLAY WITH GRID}
+\subsection{Proving Correctness}
+In order to calculate the minimum penalty of travelling from (0,0) to (M,N) I broke the problem into sub-problems. Now in order to calculate this and minimise the number of recursive calls of the function,  I used dynamic programming, by storing the penalty at each index in a M*N 2D List. So, first I calculated the penalty required to reach border points, i.e first column or first row.\\
+
+\textbf{Case 1}- first row. i.e.j=0. This is calculated by loop 1.\\
+\textbf{Invariant}-  at ith iteration, minPenalty[i][0] contains the correct minimum penalties to reach the first row ith column.\\
+\textbf{Base Case}- i=0, now i=0=j implies that we are at the staring point. Hence to reach there minPenalty= penalty at (0,0)\\
+\textbf{Induction Hypothesis} -Let minPenalty[i][0] give correct minimum penalty to reach (i,0) for all i$<$=i$_o$\\
+\textbf{Induction Step}- Now for i=i$_o$+1, to reach that point there is only one way to go, vertically down. Hence-
+\begin{center}minPenalty[i$_o$+1][0] = minPenalty[i$_o$][0] + penalty[i$_o$+1][0]\end{center}
+
+Now by our hypothesis minPenalty[i$_o$] is correct hence minPenalty[i$_o$+1] is also correct. Hence the  invariant is maintained at each stage, and the loop gives the correct minimum penalty to reach a point in the first column.\\
+
+\textbf{Case 2}- for the points (0,j). This is calculated by loop 2.\\
+\textbf{Invariant}-  at jth iteration, minPenalty[j][j] contains the correct minimum Penaltys to reach the first column jth row.\\
+\textbf{Base Case}- j=0, now i=0=j implies that we are at the staring point. Hence to reach there minPenalty= penalty at (0,0)\\
+\textbf{Induction Hypothesis} -Let minPenalty[0][j] give correct minimum penalty to reach (0,j) for all j$<$=j$_o$\\
+\textbf{Induction Step}- Now for j=j$_o$+1, to reach that point there is only one way to go, horizontally right. Hence-
+\begin{center}minPenalty[0][j$_o$+1] = minPenalty[0][j$_o$] + penalty[0][j$_o$+1]\end{center}
+
+Now by our hypothesis minPenalty[0][j$_o$] is correct hence minPenalty[0][j$_o$+1] is also correct. Hence the  invariant is maintained at each stage, and the loop gives the correct minimum penalty to reach a point in the first row.\\
+
+\textbf{Case 3}- For the points in between the matrix away from the edges. This is calculated by the nested loop 3,4\\
+
+For the inner loop (loop 4)-\\
+\textbf{Invariant}- At jth iteration minPenalty[i][j] stores the minPenalty in travelling from (0,0) to (i-1,j-1) for the inner loop.\\
+\textbf{Base Case}- j=1
+\begin{center}minPenalty[i][1]= min(minPenalty[i-1][0], minPenalty[i][0], minPenalty[i-1][0]) + grid[i][1]\end{center} 
+If we assume that the outer loop is correct minPenalty[i][1] gives the correct minimum penalty provided that res[i-1][1] is also correct. Now we are just adding the minimum penalty to reach that point. Since by our constraint of motion, we can move one step right or down to reach (i,1) we either have to be at (i-1,1) or (i,0) or (i-1,0). Since this is an optimal program minPenalty[i][1] is the minimum penalty to reach these three coordinates plus the penalty of that coordinate. Hence the base case is correct. \\
+\textbf{Induction Hypothesis}- minPenalty[i][j] gives the correct minimum penalty to reach (i,j) for all i and j$<$=j$_o$.\\
+\textbf{Induction step}- For j=j$_o$+1. Following the above argument, to reach a point (i,j) we have to be either at (i-1,j) or (i,j-1) or (i-1,j-1). Now by the optimality of the problem, the minimum penalty to reach (m,n) is achieved only when we reach (i,j) in then minimum penalty. Now since there are only three one steps to reach (i,j), 
+\begin{center}minPenalty[i][j] = min(minPenalty[i-1][j], minPenalty[i][j-1], minPenalty[i-1][j-1]) + grid[i][j]\end{center} Now by the induction hypothesis we know these values hence minPenalty[i][j] can be computed correctly. Hence our invariant is holding and the inner loop gives the correct entries to minPenalty[i][j] \\
+
+Now the outer loop (loop 3)- \\
+\textbf{Invariant}- At ith iteration minPenalty[i] stores the minimum penalty to reach any point on the i-1th row from (0,0).\\
+\textbf{Base Case}- i=1 We know that the inner loop will give the correct value from minPenalty[1][0] to minPenalty[1][n-1]. Therefore minPenalty[i] contains the correct minimum penalty to reach at row 2, and we have already proved that minPenalty[0] is correct. Hence invariant is satisfied.\\
+\textbf{Induction Hypothesis}- Let minPenalty[i-1] gives the correct minimum penalties to reach any point in the i-1th row.\\
+\textbf{Induction Step}- Consider the ith iteration. minPenalty[i] will have values from minPenalty[i][0] to minPenalty[i][n-1]. minPenalty[0] to minPenalty[i] will have correct minimum penalties from the induction hypothesis.  Now for i=i+1. we know that the inner loop is correct and will give correct values for j=0 to j=n-1. Hence we construct one more row in the minPenalty list. Hence the invariant is correct, and the function gives the correct minPenalty list\\
+Now since our final destination is the corner point, hence we return minPenalty[M-1][N-1]. 
+
+\subsection{Analyzing Time Complexity}
+First we initialize the minPenalty two dimensional M*N list with all it's elements as 0. Hence it takes O(M*N) time.When initializing border elements, we take time O(M+N). During the nested for loop, we have a min function for two variables in it, hence it takes O(1) time. Since python allows random access in a list, we can access minPenalty[i][j] in O(1) time. Hence the nested for loop takes O(M*N) time. Hence the whole program takes O(M*N) time.
+
+
+\section{STRING PROBLEM}
+\subsection{Proving Correctness}
+In order to calculate the minimum number of edits, I broke the problems into sub- problems. I recursively calculated the edits for the string of length m to string of length n, by considering sub-strings of the two strings str1 and str2. Now, to reduce the number of function calls, I used dynamic programming, by storing the results in a (m+1)*(n+1) list. Now since the problem deals with consonants and vowels, I made two lists vorc1 and vorc2, which store whether a particular element in str1 and str2 respectively is a vowel or a consonant. Moreover, I initialized all the elements of the lists as 0.\\
+To check for a vowel or a consonant there are two loops number1 and 2 which run from 0 to m and n respectively. Each time the element in the string is either 'a', 'e', 'i', 'o' or 'u', I append 1 to vorc2 and vorc1 otherwise 0.\\
+Now for the nested for loops 3 and 4.\\
+
+For the inner loop 4.\\
+\textbf{Invariant}- At the ith iteration dp[i][j] consists of minimum number of ways to convert str1[0:i] to str2[0:j], i.e. minimum number of steps to convert string of length i from start of str1 to string of length j from starting of str2 .\\
+\textbf{Base Case}- j=0 and i=i. This means that length of sub-string of str2 is 0, and the sub-string of str2 is i. Now to convert a string of length i to string of length 0  in minimum steps is by removing all the elements.  Hence if j=0 then dp[i][j]=i, and the invariant holds.\\
+\textbf{Induction Hypothesis}- For jth iteration j$<$=j$_o$, let dp[i][j$_o$] give the correct minimum number of steps to convert the string.\\
+\textbf{Induction Step}- for j=j$-o$+1. If str1[i-1]=str2[i-1] then we can simply ignore the last characters as we do not need to change them. i.e dp[i][j] = dp[i-1][j-1].
+Now if they are not equal we check whether the last letter of str1[0:i] is a vowel or not, and if the last letter of str2[0:j] is vowel or not. For this I used the values previously calculated in vorc1 and vorc2. If last letter of str1[0:i] is a vowel and last letter of str2[0:j] is not. then we require two steps to change this vowel into a consonant by removing and inserting. After this we consider min(dp[i][j-1], dp[i-1][j], dp[i-1][j-1]). By induction Hypothesis dp[i-1][j] and dp[i-1][j-1] and dp[i][j-1] are correct. Here dp[i-1][j] means the insertion of an element into str1, and similarly dp[i][j-1] denotes the removal of the element of str1, and dp[i-1][j-1] means a replacement. Hence we take there minimum because by the principle of optimality, to convert str1 to str2 in the minimum number of edits, we have to convert str1[0:i] to str2[0:j] in the minimum number if steps. Hence- 
+\begin{center}dp[i][j] = 2+ min(dp[i][j-1], dp[i-1][j], dp[i-1][j-1])\end{center}
+Now if the last element of str1[0:i] is a consonant or last element str2[0:j] is a vowel then we need only one replacement as a consonant can  be replaced to either a vowel or a consonant. Hence-
+\begin{center}dp[i][j] = 1+ min(dp[i][j-1], dp[i-1][j], dp[i-1][j-1])\end{center} Hence it gives correct number of minimum edits and the invariant is satisfied.\\
+
+Now for the outer loop (loop3)-\\
+\textbf{Invariant}-At the ith iteration dp[i] consists of minimum number of ways to convert str1[0:i] to sub-string of str2 which can be of all length 0 to n.\\
+\textbf{Base Case}- for i=0 dp[0][j] will give correct results as the condition of i=0 hence dp[i][j]= j will be executed. Now i=0 implies that the sub-string of str1 we are taking is empty, hence the minimum number of edits is equal to the length of the sub-string of str2 i.e. j. This is achieved by adding j elements to the str1. Hence the loop gives correct number of edits and invariant holds.\\
+\textbf{Induction Hypothesis}- We assume that the loop enters right number of edits in the dp list for i$<$=i$_o$. \\
+\textbf{Induction Step}- at i=i$_o$+1 by the correctness of the inner loop, and the induction hypothesis we know that that dp[i][0] to dp[i][n] has the correct number if minimum edits required to convert the sub-string of str1 of length i$_o$+1. Hence we can create another row in the 2D list. Therefore the loop invariants hold true and the loop gives the correct result.\\
+We have proved that both the loops give correct results and the 2D list dp formed is correct, now the final strings str1 and str2 are of length m and n, hence we return dp[m][n].
+
+
+\subsection{Analyzing Time Complexity}
+Let the length of string 1 (str1) be m, and length of string 2 (str2) be n. Now the loop 1 runs for every character in str1, hence total m times. Similarly the loop 2 runs n times. Now inside the nested for loop, we have 4 conditional statements and one of them calls the inbuilt minimum function, which takes O(1) time per call. Now the outer loop runs m times and for each such iteration of the outer loop the inner loop runs n times. Hence there are m*n such function calls which takes O(m*n) time. Hence the program takes O(m+n+m*n) = O(m*n) time total.
+
+\end{document}
