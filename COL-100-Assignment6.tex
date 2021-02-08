@@ -1,0 +1,28 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+\title{ASSIGNMENT 6}
+\author{ANURAG GUPTA  2020EE30583}
+
+\date{FEBRUARY 2021}
+
+\usepackage{natbib}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\begin{document}
+\maketitle
+
+\section{MAZE TRAVERSAL}
+\subsection{Proving Correctness}
+The function uses two helper function \emph{isSafe} and \emph{maze1}. The \emph{isSafe} checks if a coordinate is safe to visit or not. This means that the coordinates of the point should lie within the maze and the coordinate should not be a 'X' i.e. a wall. The \emph{maze1} function calculates the path from the 'S' to 'E'. First we need to read the file which is passed as an input. The matrix we read is actually a 1D list of strings which we have to convert into a 2D list of characters. for this I used the loop 1 and 2. In loop 1 I recursed through the 1D list and take every 'X', 'E', 'S' and append it to the maze 2d list. With this I also searched for 'S', 'E' the start and the end point. Now all this is passed to the \\emph{maze1} function. In the \emph{maze1} function, I declared a list of boolean values which store whether a coordinate (x,y) has been previously visited or not. Initially we have not visited any coordinates so the list is initialized as false. Another list stores the path in the form of 'U', 'D', 'L', 'R'. Another list 'l' stores the path to the present coordinate we are at. Initially 'l' has one element, the coordinates of start. Now we prove that in the end l will store the path to the end point and s stores the directions we took.\\
+
+\textbf{Invariant}- at any iteration l will store the path to reach the last element of 'l'. Let it be (x,y).\\
+\textbf{Base Case}:- at the first iteration we have not started searching through the maze. Hence we are still at starting position. Hence list l will contain only one point, the staring point. Hence base case is correct.\\
+\textbf{Induction Hypothesis}:- Let we are at any coordinate (x,y). So we assume that the while loop will change l to store the path from 'S' to (x,y) and s will store the directions to that point.\\\textbf{}
+\textbf{Induction Step}:  Now we have reached (x,y) which is the last element of the list 'l'. So first of all we mark that coordinate as visited. So now we try to go from there in any direction in the order 'L', 'R', 'D', 'U'. For each of them we first confirm that we have not visited them previously otherwise we will be taking the same path again and again. So first, 'L' we check whether we have visited the left coordinate of (x,y), (x,y-1), we also check, using the \emph{isSafe} function that going left we are still within the maze and is not a wall. If correct then we can go to left and append 'L' to s, and (x,y-1) to 'l'. If not then we check for 'R' then 'D' then 'U'. If neither of them are possible it would mean we are at a dead end. This means that the coordinate (x,y) is not on the path to end. Hence we pop out that coordinate in the list 'l'. This also means that the last direction we took (the last in 's') is wrong. Hence we pop that out too. Now we can continue the loop taking the other direction from the last coordinate. Hence we check all paths in the direction 'L', 'R', 'D', 'U'. And since from our hypothesis we have assumed that l sores the path to (x,y), hence at any further step we either continue from (x,y) or pop it out, if it is a dead end. If at any iteration we reach the end coordinate then we can return 's'.\\
+Now \emph{traverseMaze} can print the list.
+
+
+
+\end{document}
